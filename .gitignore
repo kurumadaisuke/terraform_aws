@@ -33,4 +33,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-/src/terraform-kerpair.pem
+**/src/terraform-kerpair.pem
