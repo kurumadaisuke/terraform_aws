@@ -1,6 +1,15 @@
+locals {
+  cidr_block ={
+    vpc = "10.1.0.0/16",
+    public_a = "10.1.11.0/24",
+    public_c = "10.1.12.0/24",
+    private_a = "10.1.13.0/24",
+    private_c = "10.1.14.0/24",
+  }
+} 
 #VPC
 resource "aws_vpc" "main" {
-  cidr_block                       = "10.1.0.0/16"
+  cidr_block                       = lookup(local.cidr_block,"vpc") 
   enable_dns_hostnames             = true
   instance_tenancy                 = "default"
   enable_dns_support               = true
@@ -8,6 +17,7 @@ resource "aws_vpc" "main" {
 
   tags = {
     Name = "vpc-terraform"
+    # Name = element(local.cidr_block,lookup(local.cidr_block,"vpc")[count.index] )
   }
 }
 
@@ -15,7 +25,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public-a" {
   availability_zone       = "ap-northeast-1a"
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.1.11.0/24"
+  cidr_block              = lookup(local.cidr_block,"public_a")
   map_public_ip_on_launch = true
   tags = {
     Name = "PublicA-terraform"
@@ -25,7 +35,7 @@ resource "aws_subnet" "public-a" {
 resource "aws_subnet" "public-c" {
   availability_zone       = "ap-northeast-1c"
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.1.12.0/24"
+  cidr_block              = lookup(local.cidr_block,"public_c")
   map_public_ip_on_launch = true
   tags = {
     Name = "PublicC-terraform"
@@ -35,7 +45,7 @@ resource "aws_subnet" "public-c" {
 resource "aws_subnet" "private-1a" {
   availability_zone = "ap-northeast-1a"
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.1.13.0/24"
+  cidr_block        = lookup(local.cidr_block,"private_a")
 
   tags = {
     Name = "PraivateA-terraform"
@@ -44,7 +54,7 @@ resource "aws_subnet" "private-1a" {
 resource "aws_subnet" "private-1c" {
   availability_zone = "ap-northeast-1c"
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.1.14.0/24"
+  cidr_block        = lookup(local.cidr_block,"private_c")
 
   tags = {
     Name = "PraivateC-terraform"
